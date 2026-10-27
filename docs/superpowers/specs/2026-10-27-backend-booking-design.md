@@ -1,7 +1,7 @@
 # Backend: Randevu Akışı Tasarımı
 
 Tarih: 27 Ekim 2026
-Durum: Tasarım onaylandı, spec incelemede
+Durum: Uygulandı (plan: `docs/superpowers/plans/2026-10-27-backend-booking.md`)
 Dal: `feat/backend`
 
 ## Amaç
@@ -222,3 +222,14 @@ Uygulama TDD ile yazılır: önce başarısız test, sonra kod.
 - **`CLAUDE.md`:** proje özetine backend; teknoloji bölümü frontend (değişmedi) ve backend (Node 24 + Express + TypeScript, build yok) olarak ikiye ayrılır; dosya yolları `public/` ve `server/`; komutlar eklenir; doğrulama bölümüne sunucu üzerinden kontrol eklenir. Yasaklar: frontend'de framework/kütüphane yasağı sürer; `npm` ve `package.json` yasağı kalkar, backend bağımlılıkları kullanıcı onayıyla eklenir.
 - **`.gitignore`:** `node_modules/`.
 - **`docs/landing-page-plan.md`:** dosya yolları `public/` olarak güncellenir.
+
+## Doğrulama sonuçları (27 Ekim 2026)
+
+- `npm test`: 37/37 geçti; `npm run typecheck`: hatasız.
+- Headless Edge, `npm start` ile açılan sunucu üzerinden:
+  - Randevu akışı baştan sona tamamlandı; alınan randevu takvim sayfasında doğru saatte göründü.
+  - Aynı saate iki sekmeden randevu: ikinci sekmede "Bu saat az önce doldu…" uyarısı çıktı, saat listeden kalktı.
+  - Boş, hatalı ve doğru bilgilerle form davranışı doğru; bulunamayan hizmet veren için hata mesajı gösterildi.
+  - Tarayıcı saat dilimi America/New_York iken saatler ve gün şeridi İstanbul saatine göre gösterildi.
+  - Landing `/` adresinde eskisi gibi çalıştı (menü bağlantıları, erken erişim formu).
+  - Üç sayfada 375, 768 ve 1280px genişliklerde yan kaydırma yok; konsolda JavaScript hatası yok.
