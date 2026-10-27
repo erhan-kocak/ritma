@@ -1,10 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createApp } from "../src/app.ts";
+import { createMemoryStore } from "../src/store/memory-store.ts";
 import { startTestServer } from "./helpers.ts";
+import { TEST_NOW, testData } from "./fixtures.ts";
 
 test("GET / landing sayfasını döner", async (t) => {
-  const server = await startTestServer(createApp({}));
+  const server = await startTestServer(createApp({ store: createMemoryStore(testData()), now: () => TEST_NOW }));
   t.after(() => server.close());
 
   const res = await fetch(`${server.baseUrl}/`);
@@ -15,7 +17,7 @@ test("GET / landing sayfasını döner", async (t) => {
 });
 
 test("public dışındaki dosyalar sunulmaz", async (t) => {
-  const server = await startTestServer(createApp({}));
+  const server = await startTestServer(createApp({ store: createMemoryStore(testData()), now: () => TEST_NOW }));
   t.after(() => server.close());
 
   for (const path of ["/package.json", "/server/src/app.ts", "/CLAUDE.md"]) {
