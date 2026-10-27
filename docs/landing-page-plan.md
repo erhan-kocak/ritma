@@ -46,16 +46,16 @@ Ritma henüz yayında değil. Tanıtım sayfasının tek amacı, ziyaretçileri 
   - Meslek: Danışman, Koç, Eğitmen, Diyetisyen, Psikolog, Diğer
 - Hatalı ya da boş alanın altında Türkçe uyarı çıkar, imleç ilk hatalı alana gider. Kullanıcı alanı düzeltirken uyarı güncellenir.
 - Bilgiler doğruysa form kaybolur, "Teşekkürler {ad}!" mesajı görünür.
-- Veri hiçbir yere gönderilmez. Gerçek servis bağlanınca yalnızca `script.js` içindeki `submitSignup` fonksiyonu değişecek.
+- Veri hiçbir yere gönderilmez. Gerçek servis bağlanınca yalnızca `public/script.js` içindeki `submitSignup` fonksiyonu değişecek.
 
 ### Alt bilgi
 - Ritma logosu, tek cümlelik açıklama, `merhaba@ritma.app` (yer tutucu), "© 2026 Ritma".
 
 ## Dosyalar
 
-- `index.html`: tüm bölümler
-- `styles.css`: stiller; mevcut renk değişkenleri ve `.card`, `.btn`, `.eyebrow` sınıfları kullanıldı
-- `script.js`: form kontrolü ve teşekkür mesajı
+- `public/index.html`: tüm bölümler
+- `public/styles.css`: stiller; mevcut renk değişkenleri ve `.card`, `.btn`, `.eyebrow` sınıfları kullanıldı
+- `public/script.js`: form kontrolü ve teşekkür mesajı
 
 ## Doğrulama
 

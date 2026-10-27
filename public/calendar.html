@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Takvim — Ritma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="calendar.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="logo" aria-label="Ritma ana sayfa">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 12h3l2-5 4 10 3-7 2 2h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        Ritma
+      </a>
+    </div>
+  </header>
+
+  <main class="container app-page">
+    <p class="app-note">Henüz giriş yok, bu sayfa şimdilik herkese açık.</p>
+    <p class="app-status muted" id="status" aria-live="polite">Yükleniyor…</p>
+
+    <div class="card schedule calendar" id="calendar" hidden>
+      <div class="schedule-head calendar-head">
+        <div>
+          <p class="muted small" id="provider-name"></p>
+          <h1 class="schedule-date" id="date-label"></h1>
+        </div>
+        <div class="calendar-nav">
+          <button type="button" class="btn btn-ghost btn-sm" id="today">Bugün</button>
+          <button type="button" class="btn btn-ghost btn-sm calendar-arrow" id="prev" aria-label="Önceki gün">‹</button>
+          <button type="button" class="btn btn-ghost btn-sm calendar-arrow" id="next" aria-label="Sonraki gün">›</button>
+        </div>
+      </div>
+      <p class="muted" id="list-status" aria-live="polite"></p>
+      <ul class="slots" id="appointments"></ul>
+    </div>
+  </main>
+</body>
+</html>

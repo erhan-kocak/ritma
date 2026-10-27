@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Randevu Al — Ritma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="book.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="logo" aria-label="Ritma ana sayfa">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 12h3l2-5 4 10 3-7 2 2h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        Ritma
+      </a>
+    </div>
+  </header>
+
+  <main class="container app-page">
+    <p class="app-status muted" id="status" aria-live="polite">Yükleniyor…</p>
+
+    <div id="booking" hidden>
+      <header class="app-head">
+        <h1 class="app-title" id="provider-name"></h1>
+        <p class="muted" id="provider-title"></p>
+      </header>
+
+      <section class="app-step" aria-labelledby="step-service">
+        <h2 class="app-step-title" id="step-service">1. Hizmet seçin</h2>
+        <div class="choice-grid" id="services"></div>
+      </section>
+
+      <section class="app-step" id="step-time" aria-labelledby="step-time-title" hidden>
+        <h2 class="app-step-title" id="step-time-title">2. Gün ve saat seçin</h2>
+        <div class="day-strip" id="days"></div>
+        <p class="app-alert" id="slots-alert" role="alert" hidden></p>
+        <p class="muted" id="slots-status" aria-live="polite"></p>
+        <div class="time-grid" id="slots"></div>
+      </section>
+
+      <section class="app-step" id="step-details" aria-labelledby="step-details-title" hidden>
+        <h2 class="app-step-title" id="step-details-title">3. Bilgileriniz</h2>
+        <div class="card app-card">
+          <p class="app-summary" id="summary"></p>
+          <form id="booking-form" novalidate>
+            <div class="field">
+              <label for="clientName">Ad Soyad</label>
+              <input id="clientName" name="clientName" type="text" autocomplete="name" placeholder="Ayşe Yılmaz" maxlength="100">
+              <p class="field-error" id="clientName-error" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label for="clientEmail">E-posta</label>
+              <input id="clientEmail" name="clientEmail" type="email" autocomplete="email" placeholder="ornek@eposta.com">
+              <p class="field-error" id="clientEmail-error" aria-live="polite"></p>
+            </div>
+            <p class="field-error" id="form-error" role="alert"></p>
+            <button type="submit" class="btn btn-primary btn-block">Randevuyu onayla</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <div class="card app-card app-success" id="success" hidden>
+      <span class="dot-icon">✓</span>
+      <h1 class="app-title">Randevunuz onaylandı</h1>
+      <p id="success-detail"></p>
+      <button type="button" class="btn btn-ghost" id="new-booking">Yeni randevu al</button>
+    </div>
+  </main>
+</body>
+</html>
