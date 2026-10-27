@@ -100,7 +100,7 @@ type Appointment = {
 - Hizmet veren: Ayşe Yılmaz, Diyetisyen, slug `ayse-yilmaz`
 - Hizmetler: "Beslenme danışmanlığı" 45 dk, "Takip görüşmesi" 30 dk
 - Çalışma saatleri: Pazartesi–Cuma 09:00–12:00 ve 13:00–18:00; hafta sonu kapalı
-- Birkaç örnek randevu: takvim sayfası ilk açılışta boş görünmesin diye bugün ve yarın için
+- Birkaç örnek randevu: takvim sayfası ilk açılışta boş görünmesin diye bugünden başlayan ilk iki iş günü için (sunucu hafta sonu açılırsa randevular kapalı günlere düşmesin diye)
 
 ## Kurallar
 

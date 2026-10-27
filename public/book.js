@@ -143,10 +143,16 @@ function showError(fieldName, message) {
   $(`${fieldName}-error`).textContent = message;
 }
 
-async function handleSlotTaken() {
+// Seçilen saat artık alınamıyorsa (dolduysa ya da geçtiyse) listeyi yenileyip yeni saat seçtir.
+const SLOT_UNAVAILABLE_MESSAGES = {
+  slot_taken: "Bu saat az önce doldu, lütfen başka bir saat seçin.",
+  invalid_slot: "Bu saat artık uygun değil, lütfen başka bir saat seçin.",
+};
+
+async function handleSlotUnavailable(code) {
   hideDetails();
   const alert = $("slots-alert");
-  alert.textContent = "Bu saat az önce doldu, lütfen başka bir saat seçin.";
+  alert.textContent = SLOT_UNAVAILABLE_MESSAGES[code];
   alert.hidden = false;
   await loadSlots();
   $("step-time").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -184,8 +190,8 @@ form.addEventListener("submit", async (event) => {
     $("success").hidden = false;
     window.scrollTo({ top: 0 });
   } catch (error) {
-    if (error.code === "slot_taken") {
-      await handleSlotTaken();
+    if (error.code in SLOT_UNAVAILABLE_MESSAGES) {
+      await handleSlotUnavailable(error.code);
     } else {
       $("form-error").textContent = error.message;
     }
