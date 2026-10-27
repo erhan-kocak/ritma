@@ -1,0 +1,106 @@
+/* Randevu ve takvim sayfaları. Renkler styles.css içindeki :root değişkenlerinden. */
+
+.app-page {
+  max-width: 760px;
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+.app-head { margin-bottom: 32px; }
+.app-title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -.03em;
+  margin-bottom: 6px;
+}
+.app-status { padding: 48px 0; text-align: center; }
+.app-step { margin-bottom: 36px; scroll-margin-top: 88px; }
+.app-step-title { font-size: 1.1rem; margin-bottom: 14px; }
+.app-card { padding: 28px; }
+.app-summary {
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.app-alert {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--error-soft);
+  color: var(--error);
+  font-size: .9rem;
+  font-weight: 500;
+}
+.app-success { text-align: center; }
+.app-success .dot-icon { margin: 0 auto 16px; width: 48px; height: 48px; font-size: 1.3rem; }
+.app-success p { margin-bottom: 24px; }
+
+/* Seçilebilir düğmeler: hizmet, gün, saat */
+.choice, .day, .time-choice {
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.choice:hover, .day:hover, .time-choice:hover { border-color: var(--primary); }
+.choice[aria-pressed="true"], .day[aria-pressed="true"], .time-choice[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+.choice:focus-visible, .day:focus-visible, .time-choice:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary-soft);
+  border-color: var(--primary);
+}
+
+.choice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  text-align: left;
+}
+.choice span { font-size: .9rem; }
+
+.day-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 18px;
+  scrollbar-width: thin;
+}
+.day {
+  flex: 0 0 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 0;
+}
+.day span { font-size: .8rem; color: var(--muted); }
+.day strong { font-size: 1.15rem; }
+
+.time-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.time-choice { height: 44px; font-weight: 600; }
+
+/* Takvim */
+.app-note {
+  margin-bottom: 24px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: .9rem;
+  font-weight: 500;
+}
+
+@media (max-width: 520px) {
+  .app-page { padding-top: 24px; }
+  .app-card { padding: 24px 20px; }
+  .choice-grid { grid-template-columns: 1fr; }
+}
