@@ -28,6 +28,7 @@ Sayfadaki tüm metinler ve API hata mesajları Türkçe.
 - Yalnızca silinebilir TypeScript sözdizimi: `enum`, `namespace`, constructor parametre özellikleri yok (`erasableSyntaxOnly`). Göreli import'lar `.ts` uzantısıyla yazılır.
 - Testler Node'un yerleşik `node:test` modülüyle.
 - Saat dilimi sabit `Europe/Istanbul` (`+03:00`).
+- Tarih/saat hesapları `server/src/domain/time.ts` yardımcılarıyla yapılır; `Date.parse`'a saat dilimi olmayan değer verilmez.
 
 ## Dosyalar
 
@@ -46,6 +47,8 @@ Express yalnızca `public/` klasörünü sunar; kök klasördeki dosyalar taray�
 - `npm start`: sunucuyu başlatır, sayfalar `http://localhost:3000` adresinde (landing `/`, randevu `/book.html?p=ayse-yilmaz`, takvim `/calendar.html?p=ayse-yilmaz`).
 - `npm run dev`: aynısı, dosya değişince yeniden başlar.
 - `npm test`: tüm testler.
+- `node --test server/test/slots.test.ts`: tek test dosyası.
+- `TZ=UTC npm test`: testleri UTC'de de çalıştır; saat dilimi hatalarını yakalar (sunucular genelde UTC'de çalışır).
 - `npm run typecheck`: TypeScript tip kontrolü.
 
 Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
@@ -67,6 +70,8 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 - Randevu ve takvim sayfaları API'ye ihtiyaç duyar; bunları `npm start` ile açılan `http://localhost:3000` üzerinden kontrol et.
 - Edge'in `--window-size` ayarı 500px'in altına inmez. 375px mobil görünümü test etmek için Edge'i `--remote-debugging-port` ile aç ve CDP `Emulation.setDeviceMetricsOverride` kullan. Node 24'te `fetch` ve `WebSocket` hazır geldiği için ek paket gerekmez.
 - Kontrol et: 375, 768 ve 1280px'te yan kaydırma olmaması, menü bağlantılarının doğru bölüme gitmesi, formların boş, hatalı ve doğru bilgilerle davranışı, konsolda hata olmaması.
+- Saat dilimi: CDP `Emulation.setTimezoneOverride` (ör. `America/New_York`) ile sayfaların yine İstanbul saatini gösterdiğini kontrol et.
+- Bilerek tetiklenen 4xx yanıtları için "Failed to load resource" satırları ve `/favicon.ico` 404'ü beklenen durumlar; JavaScript hatası sayılmaz.
 
 ## Yasaklar
 
