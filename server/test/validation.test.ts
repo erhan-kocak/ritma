@@ -44,3 +44,10 @@ test("boş ve hatalı e-posta", () => {
   assert.equal(messageFor({ ...valid, clientEmail: "" }), "Lütfen e-posta adresinizi yazın.");
   assert.equal(messageFor({ ...valid, clientEmail: "mehmet@" }), "Geçerli bir e-posta adresi yazın.");
 });
+
+test("saat dilimi belirtilmemiş saat reddedilir", () => {
+  assert.equal(messageFor({ ...valid, start: "2026-10-28T10:00:00" }), "Lütfen bir saat seçin.");
+  assert.equal(messageFor({ ...valid, start: "2026-10-28 10:00" }), "Lütfen bir saat seçin.");
+  assert.equal(messageFor({ ...valid, start: "+275760-09-13T00:00:00Z" }), "Lütfen bir saat seçin.");
+  assert.equal(messageFor({ ...valid, start: "2026-10-28T07:00:00.000Z" }), undefined);
+});

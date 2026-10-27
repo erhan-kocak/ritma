@@ -154,3 +154,10 @@ test("bilinmeyen /api yolu 404 not_found", async (t) => {
   assert.equal(res.status, 404);
   assert.deepEqual(res.body, { error: { code: "not_found", message: "Bulunamadı." } });
 });
+
+test("saat dilimi belirtilmemiş start 400 döner, yanlış saate kaydedilmez", async (t) => {
+  const { book } = await setup(t);
+  const res = await book("2026-10-28T10:00:00");
+  assert.equal(res.status, 400);
+  assert.deepEqual(res.body, { error: { code: "invalid_request", message: "Lütfen bir saat seçin." } });
+});

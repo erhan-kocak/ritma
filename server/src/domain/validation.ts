@@ -4,6 +4,8 @@ export type ValidationResult = { ok: true; value: AppointmentInput } | { ok: fal
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_NAME_LENGTH = 100;
+// Saat dilimi (Z ya da ±HH:MM) zorunlu; yoksa Date.parse sunucunun kendi saat dilimini varsayar.
+const START_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
 
 const text = (value: unknown) => (typeof value === "string" ? value.trim() : "");
 
@@ -23,7 +25,7 @@ export function validateAppointmentInput(body: unknown): ValidationResult {
   const fail = (message: string): ValidationResult => ({ ok: false, message });
 
   if (!value.serviceId) return fail("Lütfen bir hizmet seçin.");
-  if (!value.start || Number.isNaN(Date.parse(value.start))) return fail("Lütfen bir saat seçin.");
+  if (!START_PATTERN.test(value.start) || Number.isNaN(Date.parse(value.start))) return fail("Lütfen bir saat seçin.");
   if (!value.clientName) return fail("Lütfen adınızı ve soyadınızı yazın.");
   if (value.clientName.length > MAX_NAME_LENGTH) return fail("Ad soyad en fazla 100 karakter olabilir.");
   if (!value.clientEmail) return fail("Lütfen e-posta adresinizi yazın.");
