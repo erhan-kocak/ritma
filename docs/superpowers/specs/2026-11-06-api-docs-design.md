@@ -1,7 +1,7 @@
 # API Deneme Arayüzü (Swagger UI) Tasarımı
 
 Tarih: 6 Kasım 2026
-Durum: Tasarım onaylandı, uygulama bekliyor
+Durum: Uygulandı (plan: `docs/superpowers/plans/2026-11-06-api-docs.md`)
 Dal: `feat/api-docs`
 
 ## Amaç
@@ -32,7 +32,8 @@ GET /api/openapi.json   →  server/src/openapi.ts         OpenAPI belgesini ür
 OpenAPI 3.1 belgesini bir TypeScript nesnesi olarak üreten `createOpenApiDocument(now: Date)` fonksiyonu.
 
 - Belge her istekte üretilir; örnek tarih "bugünden sonraki ilk iş günü" (İstanbul saatine göre, `time.ts` yardımcılarıyla). Durağan bir tarih birkaç gün sonra geçmişte kalır ve örnekler boş liste ya da 400 dönmeye başlar.
-- "İlk iş günü" hesabı ayrı, dışa açık bir fonksiyondur (`nextWorkingDayAfter(date)`); test edilir.
+- "İlk iş günü" hesabı ayrı, dışa açık bir fonksiyondur (`nextWorkingDayAfter(date)`); tarih yardımcılarının toplandığı `server/src/domain/time.ts` içindedir ve test edilir.
+- Tüm işlemler Türkçe "Randevu akışı" etiketi altındadır; böylece Swagger'da İngilizce "default" başlığı çıkmaz.
 
 ### `server/src/app.ts`
 
@@ -73,7 +74,7 @@ Swagger'daki açılır listede, bu sırayla:
 
 11:00 neden: örnek veri randevuları bugünden başlayan ilk iki iş gününe koyar (birinci gün 10:00–10:45, 14:00, 16:30; ikinci gün 09:30–10:15). "Bugünden sonraki ilk iş günü" bunlardan biri ya da ikisinden sonraki bir gündür; her durumda 11:00 boştur.
 
-Her örnekte beklenen durum `x-expected-status` alanında tutulur (OpenAPI uzantısı; Swagger UI göstermez, testler okur).
+Her örnekte beklenen durum `x-expected-status`, hata örneklerinde beklenen hata kodu `x-expected-code` alanında tutulur (OpenAPI uzantısı; Swagger UI göstermez, testler okur). Hata kodu da denetlendiği için bir örneğin yanlış nedenle 400 dönmesi (ör. 11:07 için `invalid_slot` yerine `invalid_request`) yakalanır.
 
 ### Şemalar
 
@@ -98,6 +99,10 @@ Headless Edge + CDP ile `http://localhost:3000/api-docs/`:
 - Bir GET ve bir POST "Execute" ile çalışır.
 - 375, 768 ve 1280px'te sayfa düzeyinde yan kaydırma yok (Swagger'ın kod kutularının kendi içinde kayması normal).
 - Konsolda JavaScript hatası yok.
+
+Sonuç (6 Kasım 2026): 4 işlem ve 8 POST örneği görünüyor; Execute ile `GET /api/providers/{slug}` 200, POST 1. örnek 201, tekrarı 409. 375, 768 ve 1280px'te sayfa düzeyinde yan kaydırma yok (yalnızca curl kod kutuları kendi içinde kayıyor). Konsolda yalnızca beklenen satırlar: `/favicon.ico` 404 ve bilerek tetiklenen 409.
+
+Not: Swagger, bir işlem açıldıktan sonraki yaklaşık yarım saniye içinde gelen "Execute" tıklamasını yok sayar (parametre değerlerini o arada durumuna yazıyor). İnsan kullanımında fark edilmez; otomatik doğrulama betikleri açtıktan sonra kısa bir süre beklemelidir.
 
 ## Belgelerde güncellenecekler
 
