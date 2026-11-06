@@ -39,3 +39,10 @@ export function parseHm(hm: string): number {
 export function toLocalIso(date: string, minutes: number): string {
   return `${date}T${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}:00${TZ_OFFSET}`;
 }
+
+// Verilen günden sonraki ilk Pazartesi–Cuma günü.
+export function nextWorkingDayAfter(date: string): string {
+  let next = addDays(date, 1);
+  while (dayOfWeek(next) > 5) next = addDays(next, 1);
+  return next;
+}
