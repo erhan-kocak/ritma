@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Ritma; danışman, koç, eğitmen, diyetisyen gibi serbest çalışan hizmet sağlayıcılar için bir randevu ve müşteri takip sistemi. Ürün henüz yayında değil.
 
-İki parçadan oluşur:
+Üç parçadan oluşur:
 
 - **Landing page** (`public/index.html`): tek sayfa. Bölümler sırasıyla: hero, nasıl çalışır (müşterinin gözünden 3 adım), erken erişim formu, alt bilgi. Sayfa bilerek kısa tutuldu; fiyatlandırma ve SSS bölümleri konuşuldu ve şimdilik çıkarıldı. Ana amacı ziyaretçileri erken erişim listesine kaydetmek ("Erken erişim için kaydol").
 - **Randevu akışı** (backend + iki sayfa): müşteri hizmet verenin boş saatlerini görüp randevu alır (`public/book.html`), hizmet veren randevularını takviminde görür (`public/calendar.html`). Veriler bellekte; sunucu yeniden başlayınca örnek veriye döner. Giriş, iptal, hatırlatma ve kalıcı veritabanı henüz yok. Tasarım: `docs/superpowers/specs/2026-10-27-backend-booking-design.md`.
@@ -34,7 +34,7 @@ Sayfadaki tüm metinler ve API hata mesajları Türkçe.
 ## Dosyalar
 
 - `public/index.html`: landing sayfasının tamamı. Hero'daki takvim görseli resim değil, HTML ve CSS ile çizilmiş bir örnek.
-- `public/script.js`: erken erişim formunun kontrolü ve teşekkür mesajı. Form verisi şimdilik hiçbir yere gönderilmiyor; gerçek bir servis bağlanınca yalnızca `submitSignup` fonksiyonu değişecek. Sayfa yayına çıkmadan önce bu yapılmalı, yoksa kayıtlar kaybolur.
+- `public/script.js`: erken erişim formunun kontrolü ve teşekkür mesajı. Form verisi şimdilik hiçbir yere gönderilmiyor; gerçek bir servis bağlanınca yalnızca `submitSignup` fonksiyonu değişecek.
 - `public/styles.css`: tüm sayfaların ortak stilleri. Renk, köşe yuvarlaklığı ve gölge gibi değerler `:root` altında değişken olarak tanımlı. Landing 960px altında tek sütuna geçer, 520px altında bazı öğeler gizlenir.
 - `public/app.css`, `public/api.js`, `public/book.*`, `public/calendar.*`: randevu ve takvim sayfaları.
 - `server/src/domain/`: saf fonksiyonlar (zaman, slot hesabı, doğrulama). `server/src/store/`: bellekteki depo ve örnek veri. `server/src/routes/`: API. `server/src/app.ts`: Express uygulaması (dinlemez); `server/src/server.ts`: 3000 portunda başlatır.
@@ -65,9 +65,14 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 - Tüm "Erken erişim" butonları `#early-access` formuna gider. "Giriş Yap" bağlantısı şimdilik `#` adresine gidiyor. Alt bilgideki `merhaba@ritma.app` yer tutucu bir adres.
 - Backend kodu test önce yazılır (TDD); değişiklikten sonra `npm test` ve `npm run typecheck` geçmeli.
 - Uç nokta eklenince ya da değişince `server/src/openapi.ts` de güncellenir; `server/test/openapi.test.ts` yolların router'la eşleştiğini ve örneklerin belgelenen kodları döndüğünü denetler. Yeni bir router eklenirse o teste de eklenir.
-- Yayından önce: `/api-docs/` ve `/api/openapi.json` kapatılmalı ya da korunmalı (şu an herkese açık).
 - Tasarım ve içerik kararları kullanıcıyla birlikte, tek tek soru sorarak alınır. Kullanıcı onay vermeden uygulamaya geçilmez.
 - Alınan kararlar ve planlar `docs/` altında tutulur (ör. `docs/landing-page-plan.md`, `docs/superpowers/specs/`). Sayfayı değiştirmeden önce ilgili dosyayı oku, değişiklikten sonra güncelle.
+
+## Yayından önce
+
+- Erken erişim formu gerçek bir servise bağlanmalı (`submitSignup`); yoksa kayıtlar kaybolur.
+- `/api-docs/` ve `/api/openapi.json` kapatılmalı ya da korunmalı (şu an herkese açık).
+- Takvim uç noktası (`GET …/appointments`) herkese açık; giriş eklenince korunmalı.
 
 ## Doğrulama
 
@@ -76,6 +81,7 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 - Edge'in `--window-size` ayarı 500px'in altına inmez. 375px mobil görünümü test etmek için Edge'i `--remote-debugging-port` ile aç ve CDP `Emulation.setDeviceMetricsOverride` kullan. Node 24'te `fetch` ve `WebSocket` hazır geldiği için ek paket gerekmez.
 - Kontrol et: 375, 768 ve 1280px'te yan kaydırma olmaması, menü bağlantılarının doğru bölüme gitmesi, formların boş, hatalı ve doğru bilgilerle davranışı, konsolda hata olmaması.
 - Saat dilimi: CDP `Emulation.setTimezoneOverride` (ör. `America/New_York`) ile sayfaların yine İstanbul saatini gösterdiğini kontrol et.
+- `styles.css`'teki `scroll-behavior: smooth` yüzünden `scrollIntoView` sonrası ekran görüntüsü kaydırma bitmeden alınır; `{ behavior: "instant" }` kullan ya da biraz bekle.
 - Swagger'da bir işlemi açtıktan hemen sonra (yaklaşık yarım saniye içinde) gelen "Execute" tıklaması yok sayılır; otomatik testlerde açtıktan sonra kısa bir süre bekle.
 - Bilerek tetiklenen 4xx yanıtları için "Failed to load resource" satırları ve `/favicon.ico` 404'ü beklenen durumlar; JavaScript hatası sayılmaz.
 
