@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { addDays, dayOfWeek, isValidDate, localDateOf, parseHm, toLocalIso } from "../src/domain/time.ts";
+import { addDays, dayOfWeek, isValidDate, localDateOf, nextWorkingDayAfter, parseHm, toLocalIso } from "../src/domain/time.ts";
 
 test("isValidDate biçimi ve gerçek takvim gününü kontrol eder", () => {
   assert.equal(isValidDate("2026-10-28"), true);
@@ -27,4 +27,14 @@ test("dayOfWeek 1=Pazartesi … 7=Pazar", () => {
 test("parseHm ve toLocalIso", () => {
   assert.equal(parseHm("09:30"), 570);
   assert.equal(toLocalIso("2026-10-28", 570), "2026-10-28T09:30:00+03:00");
+});
+
+test("nextWorkingDayAfter: hafta içi ertesi gün", () => {
+  assert.equal(nextWorkingDayAfter("2026-10-28"), "2026-10-29"); // Çarşamba → Perşembe
+});
+
+test("nextWorkingDayAfter: Cuma, Cumartesi ve Pazar → Pazartesi", () => {
+  assert.equal(nextWorkingDayAfter("2026-10-30"), "2026-11-02");
+  assert.equal(nextWorkingDayAfter("2026-10-31"), "2026-11-02");
+  assert.equal(nextWorkingDayAfter("2026-11-01"), "2026-11-02");
 });
