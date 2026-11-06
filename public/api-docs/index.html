@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Deneme — Ritma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- Geliştirme aracı: CLAUDE.md'deki kütüphane yasağının tek istisnası. Sürüm sabit, SRI ile doğrulanır. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14/swagger-ui.css"
+    integrity="sha384-wxLW6kwyHktdDGr6Pv1zgm/VGJh99lfUbzSn6HNHBENZlCN7W602k9VkGdxuFvPn" crossorigin="anonymous">
+  <style>
+    .api-docs-intro { padding: 24px 0 0; }
+    .api-docs-intro h1 { font-size: 1.75rem; margin-bottom: 6px; }
+    .api-docs-intro p { color: var(--muted); }
+    #swagger-ui { padding-bottom: 48px; }
+    #swagger-ui .swagger-ui .info { margin: 24px 0; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"
+    integrity="sha384-wmyclcVGX/WhUkdkATwhaK1X1JtiNrr2EoYJ+diV3vj4v6OC5yCeSu+yW13SYJep" crossorigin="anonymous"></script>
+  <script type="module">
+    window.SwaggerUIBundle({
+      url: "/api/openapi.json",
+      dom_id: "#swagger-ui",
+      tryItOutEnabled: true,
+      displayRequestDuration: true,
+    });
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="logo" aria-label="Ritma ana sayfa">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 12h3l2-5 4 10 3-7 2 2h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        Ritma
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="api-docs-intro">
+      <h1>API Deneme</h1>
+      <p>Backend uç noktalarını buradan deneyebilirsiniz. Veriler bellekte; sunucu yeniden başlayınca örnek veriye döner.</p>
+    </section>
+    <div id="swagger-ui"></div>
+  </main>
+</body>
+</html>

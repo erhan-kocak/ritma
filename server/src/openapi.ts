@@ -25,6 +25,7 @@ export type RequestBody = {
 };
 
 export type Operation = {
+  tags: string[];
   summary: string;
   description?: string;
   parameters?: Parameter[];
@@ -35,9 +36,12 @@ export type Operation = {
 export type OpenApiDocument = {
   openapi: "3.1.0";
   info: { title: string; version: string; description: string };
+  tags: { name: string; description: string }[];
   paths: Record<string, Partial<Record<"get" | "post", Operation>>>;
   components: { schemas: Record<string, unknown> };
 };
+
+const TAG = "Randevu akışı";
 
 const ERROR_CODES = [
   "invalid_request",
@@ -153,9 +157,11 @@ export function createOpenApiDocument(now: Date): OpenApiDocument {
         "Sunucu yeniden başlayınca veriler örnek haline döner.",
       ].join("\n"),
     },
+    tags: [{ name: TAG, description: "Müşterinin randevu alması ve hizmet verenin takvimi." }],
     paths: {
       "/api/providers/{slug}": {
         get: {
+          tags: [TAG],
           summary: "Hizmet veren ve hizmetleri",
           parameters: [slug],
           responses: {
@@ -169,6 +175,7 @@ export function createOpenApiDocument(now: Date): OpenApiDocument {
       },
       "/api/providers/{slug}/slots": {
         get: {
+          tags: [TAG],
           summary: "O günün boş başlangıç saatleri",
           description: "Seçilen hizmetin süresine göre, 15 dakikalık adımlarla. Geçmiş saatler ve 14 günden ileri tarihler boş liste döner.",
           parameters: [slug, serviceId, date],
@@ -187,6 +194,7 @@ export function createOpenApiDocument(now: Date): OpenApiDocument {
       },
       "/api/providers/{slug}/appointments": {
         post: {
+          tags: [TAG],
           summary: "Randevu oluşturur",
           description: "Randevu anında onaylanır. Aynı saate ikinci istek 409 alır.",
           parameters: [slug],
@@ -202,6 +210,7 @@ export function createOpenApiDocument(now: Date): OpenApiDocument {
           },
         },
         get: {
+          tags: [TAG],
           summary: "O günün randevuları",
           description: "Başlangıç saatine göre sıralı.",
           parameters: [slug, date],

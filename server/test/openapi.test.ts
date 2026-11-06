@@ -112,3 +112,36 @@ for (const now of EXAMPLE_NOWS) {
     }
   });
 }
+
+test("GET /api-docs/ Swagger sayfasını döner", async (t) => {
+  const { baseUrl } = await setup(t);
+
+  const res = await fetch(`${baseUrl}/api-docs/`);
+  const html = await res.text();
+
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("content-type") ?? "", /text\/html/);
+  assert.match(html, /swagger-ui-dist@5\.17\.14/);
+  assert.match(html, /integrity="sha384-/);
+  assert.match(html, /\/api\/openapi\.json/);
+});
+
+test("GET /api-docs eğik çizgisiz sayfaya ulaşır", async (t) => {
+  const { baseUrl } = await setup(t);
+
+  const res = await fetch(`${baseUrl}/api-docs`);
+
+  assert.equal(res.status, 200);
+  assert.ok(res.url.endsWith("/api-docs/"), res.url);
+});
+
+test("her işlem Türkçe bir etiket altında (Swagger'da 'default' başlığı çıkmaz)", () => {
+  const doc = createOpenApiDocument(TEST_NOW);
+
+  assert.deepEqual(doc.tags.map((tag) => tag.name), ["Randevu akışı"]);
+  for (const [path, operations] of Object.entries(doc.paths)) {
+    for (const [method, operation] of Object.entries(operations)) {
+      assert.deepEqual(operation.tags, ["Randevu akışı"], `${method} ${path}`);
+    }
+  }
+});
