@@ -40,7 +40,7 @@ Sayfadaki tüm metinler ve API hata mesajları Türkçe.
 - `server/src/domain/`: saf fonksiyonlar (zaman, slot hesabı, doğrulama). `server/src/store/`: bellekteki depo ve örnek veri. `server/src/routes/`: API. `server/src/app.ts`: Express uygulaması (dinlemez); `server/src/server.ts`: 3000 portunda başlatır.
 - `server/src/openapi.ts`: `/api/openapi.json`'da sunulan OpenAPI belgesi. Örnek tarih her istekte "bugünden sonraki ilk iş günü" olarak hesaplanır; POST örnekleri beklenen durum ve hata kodunu `x-expected-status` / `x-expected-code` alanlarında taşır.
 - `public/api-docs/index.html`: Swagger UI sayfası.
-- `server/test/`: testler.
+- `server/test/`: testler. `fixtures.ts`'teki `testData()` (hizmet `s45`) gerçek örnek veriden (`createSeedData(now)`, hizmet `nutrition-45`) farklı; `openapi.ts` örneklerini denerken `createSeedData` kullan.
 
 Express yalnızca `public/` klasörünü sunar; kök klasördeki dosyalar tarayıcıdan erişilemez.
 
@@ -81,6 +81,7 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 - Edge'in `--window-size` ayarı 500px'in altına inmez. 375px mobil görünümü test etmek için Edge'i `--remote-debugging-port` ile aç ve CDP `Emulation.setDeviceMetricsOverride` kullan. Node 24'te `fetch` ve `WebSocket` hazır geldiği için ek paket gerekmez.
 - Kontrol et: 375, 768 ve 1280px'te yan kaydırma olmaması, menü bağlantılarının doğru bölüme gitmesi, formların boş, hatalı ve doğru bilgilerle davranışı, konsolda hata olmaması.
 - Saat dilimi: CDP `Emulation.setTimezoneOverride` (ör. `America/New_York`) ile sayfaların yine İstanbul saatini gösterdiğini kontrol et.
+- Sunucu kodunu değiştirdiysen tarayıcı kontrolünden önce sunucuyu yeniden başlat (`npm start` değişiklikleri izlemez) ya da `npm run dev` kullan.
 - `styles.css`'teki `scroll-behavior: smooth` yüzünden `scrollIntoView` sonrası ekran görüntüsü kaydırma bitmeden alınır; `{ behavior: "instant" }` kullan ya da biraz bekle.
 - Swagger'da bir işlemi açtıktan hemen sonra (yaklaşık yarım saniye içinde) gelen "Execute" tıklaması yok sayılır; otomatik testlerde açtıktan sonra kısa bir süre bekle.
 - Bilerek tetiklenen 4xx yanıtları için "Failed to load resource" satırları ve `/favicon.ico` 404'ü beklenen durumlar; JavaScript hatası sayılmaz.
