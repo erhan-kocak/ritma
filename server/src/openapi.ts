@@ -82,7 +82,64 @@ export function createOpenApiDocument(now: Date): OpenApiDocument {
     example: "nutrition-45",
   };
 
-  const examples: Record<string, BodyExample> = {};
+  // 11:00, örnek verideki randevularla hiçbir durumda çakışmaz (bkz. spec). Sıra önemli: 2. örnek 1.'ye bağlı.
+  const at = (hm: string) => `${exampleDate}T${hm}:00+03:00`;
+  const valid = {
+    serviceId: "nutrition-45",
+    start: at("11:00"),
+    clientName: "Mehmet Kaya",
+    clientEmail: "mehmet@ornek.com",
+  };
+  const examples: Record<string, BodyExample> = {
+    gecerli: {
+      summary: "1. Geçerli randevu (11:00, 45 dk) → 201",
+      value: valid,
+      "x-expected-status": 201,
+    },
+    tekrar: {
+      summary: "2. Aynı isteği tekrar gönder → 409",
+      description: "Önce 1. örneği gönderin; aynı saat dolu olduğu için 409 döner.",
+      value: valid,
+      "x-expected-status": 409,
+      "x-expected-code": "slot_taken",
+    },
+    bozukEposta: {
+      summary: "3. Bozuk e-posta → 400",
+      value: { ...valid, clientEmail: "mehmet@" },
+      "x-expected-status": 400,
+      "x-expected-code": "invalid_request",
+    },
+    bosAd: {
+      summary: "4. Boş ad → 400",
+      value: { ...valid, clientName: "  " },
+      "x-expected-status": 400,
+      "x-expected-code": "invalid_request",
+    },
+    saatDilimiYok: {
+      summary: "5. Saat dilimi yok → 400",
+      value: { ...valid, start: `${exampleDate}T11:00:00` },
+      "x-expected-status": 400,
+      "x-expected-code": "invalid_request",
+    },
+    adimaUymayan: {
+      summary: "6. 15 dakikalık adıma uymayan saat (11:07) → 400",
+      value: { ...valid, start: at("11:07") },
+      "x-expected-status": 400,
+      "x-expected-code": "invalid_slot",
+    },
+    calismaSaatiDisi: {
+      summary: "7. Çalışma saati dışı (19:00) → 400",
+      value: { ...valid, start: at("19:00") },
+      "x-expected-status": 400,
+      "x-expected-code": "invalid_slot",
+    },
+    olmayanHizmet: {
+      summary: "8. Olmayan hizmet → 404",
+      value: { ...valid, serviceId: "olmayan-hizmet" },
+      "x-expected-status": 404,
+      "x-expected-code": "service_not_found",
+    },
+  };
 
   return {
     openapi: "3.1.0",

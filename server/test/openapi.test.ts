@@ -1,9 +1,10 @@
 import { test, type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { createApp } from "../src/app.ts";
-import { createOpenApiDocument } from "../src/openapi.ts";
+import { createOpenApiDocument, type OpenApiDocument } from "../src/openapi.ts";
 import { providersRouter } from "../src/routes/providers.ts";
 import { createMemoryStore } from "../src/store/memory-store.ts";
+import { createSeedData } from "../src/store/seed.ts";
 import { startTestServer } from "./helpers.ts";
 import { TEST_NOW, testData } from "./fixtures.ts";
 
@@ -50,3 +51,64 @@ test("belgedeki yollar router'daki rotalarla birebir aynı", () => {
 
   assert.deepEqual(fromDoc.sort(), fromRouter.sort());
 });
+
+const EXAMPLE_NOWS = [
+  new Date("2026-10-28T08:00:00+03:00"), // Çarşamba sabah
+  new Date("2026-10-30T20:00:00+03:00"), // Cuma akşam
+  new Date("2026-10-31T12:00:00+03:00"), // Cumartesi
+];
+
+async function startSeeded(t: TestContext, now: Date) {
+  const server = await startTestServer(createApp({ store: createMemoryStore(createSeedData(now)), now: () => now }));
+  t.after(() => server.close());
+  const doc: OpenApiDocument = await (await fetch(`${server.baseUrl}/api/openapi.json`)).json();
+  return { baseUrl: server.baseUrl, doc };
+}
+
+for (const now of EXAMPLE_NOWS) {
+  test(`POST örnekleri belgelenen kodları döner (şu an: ${now.toISOString()})`, async (t) => {
+    const { baseUrl, doc } = await startSeeded(t, now);
+    const post = doc.paths["/api/providers/{slug}/appointments"].post!;
+    const examples = Object.values(post.requestBody!.content["application/json"].examples);
+
+    assert.deepEqual(
+      examples.map((ex) => ex["x-expected-status"]),
+      [201, 409, 400, 400, 400, 400, 400, 404],
+    );
+    assert.deepEqual(
+      examples.map((ex) => ex["x-expected-code"]),
+      [undefined, "slot_taken", "invalid_request", "invalid_request", "invalid_request", "invalid_slot", "invalid_slot", "service_not_found"],
+    );
+
+    for (const ex of examples) {
+      assert.ok(String(ex["x-expected-status"]) in post.responses, `${ex.summary}: yanıt belgelenmemiş`);
+      const res = await fetch(`${baseUrl}/api/providers/ayse-yilmaz/appointments`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(ex.value),
+      });
+      const body = await res.json();
+      assert.equal(res.status, ex["x-expected-status"], ex.summary);
+      if (ex["x-expected-code"]) assert.equal(body.error.code, ex["x-expected-code"], ex.summary);
+    }
+  });
+
+  test(`GET işlemleri örnek parametrelerle 200 döner (şu an: ${now.toISOString()})`, async (t) => {
+    const { baseUrl, doc } = await startSeeded(t, now);
+
+    for (const [path, operations] of Object.entries(doc.paths)) {
+      const get = operations.get;
+      if (!get) continue;
+      let url = path;
+      const query = new URLSearchParams();
+      for (const p of get.parameters ?? []) {
+        if (p.in === "path") url = url.replace(`{${p.name}}`, p.example);
+        else query.set(p.name, p.example);
+      }
+      const res = await fetch(`${baseUrl}${url}${query.size ? `?${query}` : ""}`);
+      const body = await res.json();
+      assert.equal(res.status, 200, path);
+      if (path.endsWith("/slots")) assert.ok(body.slots.length > 0, "boş saat listesi boş");
+    }
+  });
+}
