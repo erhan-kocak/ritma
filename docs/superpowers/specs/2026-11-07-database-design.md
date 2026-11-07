@@ -1,7 +1,7 @@
 # Kalıcı Veritabanı (PostgreSQL) Tasarımı
 
 Tarih: 7 Kasım 2026
-Durum: Onaylandı, uygulanmadı
+Durum: Uygulandı (plan: `docs/superpowers/plans/2026-11-07-database.md`)
 Dal: `feat/database`
 
 ## Amaç
@@ -51,7 +51,7 @@ Express yalnızca `public/` klasörünü sunduğu için `db/` tarayıcıdan eri�
 `db/migrations/001-initial.sql` (şema adı yazılmaz; göç script'i `search_path`'i ayarlar):
 
 ```sql
-create extension if not exists btree_gist;
+create extension if not exists btree_gist with schema public;
 
 create table providers (
   id    text primary key,
@@ -102,7 +102,8 @@ create table appointments (
 
 - `npm start`, `npm run dev`, `npm test`, `db:migrate` ve `db:seed` komutları `node --env-file-if-exists=.env …` ile çalışır. Node `.env`'i kendisi okur; ek paket yok.
 - `pool.ts`: `DATABASE_URL` tanımlı değilse Türkçe bir hata verir ("`DATABASE_URL` tanımlı değil, `.env.example`'a bakın"); sunucu açılmaz.
-- Tek `pg.Pool`. Sunucu kapanırken (`SIGINT`, `SIGTERM`) havuz `pool.end()` ile kapatılır.
+- Tek `pg.Pool`. Sunucu kapanırken (`SIGINT`, `SIGTERM`) havuz `pool.end()` ile kapatılır. Havuzun `error` olayı dinlenir; Neon'un kapattığı boşta bağlantı süreci çökertmez.
+- Sunucu açılırken `checkTables` tabloların kurulu olduğunu kontrol eder; yoksa "Tablolar yok, npm run db:migrate çalıştırın." deyip kapanır.
 
 ### Şema seçimi
 
@@ -112,7 +113,7 @@ create table appointments (
 
 ## Depo
 
-- `Store` arayüzü aynı metotları korur; her biri `Promise` döndürür.
+- `Store` arayüzü aynı metotları korur; her biri `Promise` döndürür. `listServices` ada göre sıralıdır (veritabanında eklenme sırası yok).
 - Route'lar `async` olur; Express 5 reddedilen `Promise`'leri hata ara katmanına iletir.
 - `addAppointment`, PostgreSQL `23P01` (exclusion violation) hatasında `SlotTakenError` fırlatır; rota bunu `409 slot_taken` ("Bu saat az önce doldu.") yanıtına çevirir.
 - Rota önce "slot hâlâ boş mu?" kontrolünü yapmaya devam eder (çoğu durumda `409`'u kısıta gitmeden verir). Rotadaki "kontrol ile kayıt arasında `await` yok" yorumu kaldırılır.
@@ -140,7 +141,7 @@ create table appointments (
 
 - Asıl iş `seedDatabase(pool, schema, now)` fonksiyonunda; script yalnızca `ritma` ve `new Date()` ile çağırır.
 - Hizmet veren, hizmetler, çalışma aralıkları: `on conflict do nothing`.
-- Örnek randevular `createSeedData(now)`'dan, yeni `uuid`'lerle; çakışan saatler `on conflict do nothing` ile atlanır. Tekrar çalıştırılabilir.
+- Örnek randevular `createSeedData(now)`'dan; randevu id'leri orada `randomUUID()` ile üretilir. Çakışan saatler `on conflict do nothing` ile atlanır. Tekrar çalıştırılabilir.
 - Eklenen kayıt sayılarını Türkçe yazdırır.
 
 ## Testler
