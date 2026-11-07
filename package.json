@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server/src/server.ts",
     "dev": "node --watch server/src/server.ts",
-    "test": "node --test \"server/test/**/*.test.ts\"",
+    "test": "node --env-file-if-exists=.env --test --test-concurrency=1 \"server/test/**/*.test.ts\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
