@@ -161,3 +161,10 @@ test("saat dilimi belirtilmemiş start 400 döner, yanlış saate kaydedilmez", 
   assert.equal(res.status, 400);
   assert.deepEqual(res.body, { error: { code: "invalid_request", message: "Lütfen bir saat seçin." } });
 });
+
+test("aynı slota eşzamanlı iki istekten biri 201, diğeri 409 slot_taken", async (t) => {
+  const { book } = await setup(t);
+  const results = await Promise.all([book(at("09:00")), book(at("09:00"))]);
+  assert.deepEqual(results.map((r) => r.status).sort(), [201, 409]);
+  assert.equal(results.find((r) => r.status === 409)!.body.error.code, "slot_taken");
+});

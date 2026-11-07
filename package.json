@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server/src/server.ts",
-    "dev": "node --watch server/src/server.ts",
+    "start": "node --env-file-if-exists=.env server/src/server.ts",
+    "dev": "node --env-file-if-exists=.env --watch server/src/server.ts",
     "test": "node --env-file-if-exists=.env --test --test-concurrency=1 \"server/test/**/*.test.ts\"",
     "typecheck": "tsc --noEmit",
     "db:migrate": "node --env-file-if-exists=.env server/scripts/db-migrate.ts",

@@ -1,6 +1,7 @@
 import { before, test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { checkTables } from "../src/db/check-tables.ts";
 import { migrate } from "../src/db/migrate.ts";
 import { dumpSchema, SCHEMA_FILE } from "../src/db/schema-dump.ts";
 import type { SchemaName } from "../src/db/schema-name.ts";
@@ -11,6 +12,7 @@ before(async () => {
 });
 
 test("migrate tabloları kurar, ikinci çalıştırma hiçbir şey uygulamaz", async () => {
+  await assert.rejects(checkTables(testPool, "ritma_test"), { message: "Tablolar yok, npm run db:migrate çalıştırın." });
   assert.deepEqual(await migrate(testPool, "ritma_test"), ["001-initial.sql"]);
   assert.deepEqual(await migrate(testPool, "ritma_test"), []);
   const { rows } = await testPool.query(
