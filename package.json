@@ -2,6 +2,9 @@
   "name": "ritma",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "start": "node --env-file-if-exists=.env server/src/server.ts",
     "dev": "node --env-file-if-exists=.env --watch server/src/server.ts",
