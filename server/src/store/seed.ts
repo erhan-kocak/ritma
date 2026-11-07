@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { Appointment } from "../domain/types.ts";
 import { addDays, dayOfWeek, localDateOf, parseHm, toLocalIso } from "../domain/time.ts";
 import type { StoreData } from "./store.ts";
@@ -23,7 +24,7 @@ export function createSeedData(now: Date): StoreData {
   ];
 
   const appointments: Appointment[] = samples.map(([date, hm, serviceId, duration, clientName, clientEmail], i) => ({
-    id: `seed-${i + 1}`,
+    id: randomUUID(),
     providerId: PROVIDER_ID,
     serviceId,
     start: toLocalIso(date, parseHm(hm)),
