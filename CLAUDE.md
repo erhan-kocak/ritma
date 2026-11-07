@@ -42,6 +42,8 @@ Sayfadaki tüm metinler ve API hata mesajları Türkçe.
 - `public/api-docs/index.html`: Swagger UI sayfası.
 - `server/test/`: testler. `fixtures.ts`'teki `testData()` (hizmet `s45`) gerçek örnek veriden (`createSeedData(now)`, hizmet `nutrition-45`) farklı; `openapi.ts` örneklerini denerken `createSeedData` kullan.
 - `.claude/skills/clarify-prompt/`: belirsiz, tasarım dışı istekleri (hata ayıklama, araştırma, küçük değişiklik, doküman) en fazla 3 soruyla net bir prompta çeviren skill. Tasarım: `docs/superpowers/specs/2026-11-07-clarify-prompt-design.md`; testler: `docs/superpowers/skill-tests/2026-11-07-clarify-prompt.md`. Skill değişirse senaryolar alt ajanlarla yeniden çalıştırılır.
+- `.env.example`: gerekli ortam değişkenlerinin listesi (şimdilik `DATABASE_URL`, Neon PostgreSQL). Gerçek değerler kullanıcının oluşturduğu `.env` dosyasında durur; `.env` git'e eklenmez. Yeni bir ortam değişkeni gerekirse `.env.example`'a boş değerle eklenir.
+- `.claude/settings.json`: `.env` dosyalarının okunmasını engelleyen izin kuralları.
 
 Express yalnızca `public/` klasörünü sunar; kök klasördeki dosyalar tarayıcıdan erişilemez.
 
@@ -94,3 +96,4 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 - TypeScript için derleme/bundle adımı eklemeyin; kod Node ile doğrudan çalışmalı.
 - Türkçe dosya veya klasör adı kullanmayın.
 - Sayfa metinlerini İngilizce yazmayın.
+- `.env` dosyasını (ve hangi klasörde olursa olsun `.env`, `.env.local` gibi gerçek değer tutan türevlerini) hiçbir yolla okumayın, içeriğini yazdırmayın, düzenlemeyin ya da commit'lemeyin: Read, Grep, `cat`, `Get-Content`, script ile okuma dahil. `.claude/settings.json` bunu kısmen engeller ama kural her yol için geçerlidir. Bir değerin tanımlı olup olmadığını öğrenmek gerekiyorsa kullanıcıya sorun. Yalnızca `.env.example` okunup düzenlenebilir.
