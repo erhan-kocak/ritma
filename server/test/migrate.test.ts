@@ -24,6 +24,41 @@ test("migrate tabloları kurar, ikinci çalıştırma hiçbir şey uygulamaz", a
   );
 });
 
+// Neon'un pooled (PgBouncer transaction mode) adresinde oturum kilidi başka bir bağlantıda kalabilir;
+// kilit yalnızca işlem içinde (pg_advisory_xact_lock) alınmalı.
+test("migrate oturum düzeyinde kilit kullanmaz, kilidi işlem içinde alır", async () => {
+  const queries: string[] = [];
+  const recordingPool = {
+    connect: async () => {
+      const client = await testPool.connect();
+      return new Proxy(client, {
+        get(target, prop, receiver) {
+          if (prop === "query") {
+            return (sql: string, ...rest: unknown[]) => {
+              queries.push(sql);
+              return (target.query as (...a: unknown[]) => unknown).call(target, sql, ...rest);
+            };
+          }
+          const value = Reflect.get(target, prop, receiver);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    },
+  } as unknown as typeof testPool;
+
+  await migrate(recordingPool, "ritma_test");
+
+  assert.ok(!queries.some((q) => /pg_advisory_(un)?lock\(/.test(q)), "oturum kilidi kullanılmamalı");
+  const lockAt = queries.findIndex((q) => q.includes("pg_advisory_xact_lock"));
+  assert.ok(lockAt > 0 && queries[lockAt - 1] === "begin", "kilit begin'den hemen sonra alınmalı");
+});
+
+test("aynı şemaya eşzamanlı iki migrate göçü bir kez uygular", async () => {
+  await testPool.query('drop schema if exists "ritma_test" cascade');
+  const results = await Promise.all([migrate(testPool, "ritma_test"), migrate(testPool, "ritma_test")]);
+  assert.deepEqual(results.flat(), ["001-initial.sql"]);
+});
+
 test("btree_gist public şemasında", async () => {
   const { rows } = await testPool.query(
     "select n.nspname from pg_extension e join pg_namespace n on n.oid = e.extnamespace where e.extname = 'btree_gist'",

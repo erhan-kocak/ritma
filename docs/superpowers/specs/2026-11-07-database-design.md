@@ -124,9 +124,9 @@ create table appointments (
 
 ### `db:migrate`
 
-1. Şema yoksa oluşturur; `<şema>.schema_migrations (name text primary key, applied_at timestamptz not null)` tablosunu kurar.
-2. Advisory lock alır; aynı anda iki göç çalışmaz.
-3. `db/migrations/*.sql` dosyalarını ada göre sıralar; uygulanmamışları sırayla, her birini ayrı işlemde çalıştırır ve `schema_migrations`'a yazar. Hata olursa o işlem geri alınır, script hata koduyla çıkar.
+1. `db/migrations/*.sql` dosyalarını ada göre sıralar. Her dosya için ayrı bir işlem açar ve işlemin başında `pg_advisory_xact_lock` ile kilit alır; kilit commit/rollback ile kendiliğinden bırakılır. Oturum düzeyinde kilit (`pg_advisory_lock`) kullanılmaz: Neon'un pooled (PgBouncer transaction mode) adresinde kilit alma ve bırakma farklı sunucu bağlantılarına düşebilir ve kilit hiç bırakılmaz (uygulama sırasında yaşandı).
+2. Aynı işlemde şemayı ve `<şema>.schema_migrations (name text primary key, applied_at timestamptz not null)` tablosunu yoksa oluşturur; dosyanın uygulanıp uygulanmadığına kilit alındıktan sonra bakar. Eşzamanlı iki göçte dosya bir kez uygulanır.
+3. Uygulanmamış dosyayı çalıştırır ve `schema_migrations`'a yazar. Hata olursa o işlem geri alınır, script hata koduyla çıkar.
 4. Şema `ritma` ise `db/schema.sql`'i yeniden üretir. `ritma_test` dosyaya yazmaz.
 5. Uygulanan göçleri Türkçe yazdırır (ör. "Uygulandı: 001-initial.sql", hiçbiri yoksa "Şema güncel.").
 
