@@ -110,7 +110,7 @@ type Appointment = {
 - **Ne kadar ileri:** bugün dahil 14 gün. Bunun dışındaki tarihler için boş liste döner.
 - **Müşteriden istenenler:** ad soyad (boş olamaz) ve e-posta (biçimi kontrol edilir).
 - **Onay:** randevu anında onaylanır. Aynı saate ikinci istek `409` alır.
-- **Çakışma güvenliği:** "slot hâlâ boş mu?" kontrolü ile kaydetme arasında `await` yoktur. Node tek iş parçacıklı olduğu için eşzamanlı iki istekten yalnızca biri kaydedilir.
+- **Çakışma güvenliği:** "slot hâlâ boş mu?" kontrolü ile kaydetme arasında `await` yoktur. Node tek iş parçacıklı olduğu için eşzamanlı iki istekten yalnızca biri kaydedilir. Veritabanına geçişle bu garanti tablodaki `exclude` kısıtına taşındı: `2026-11-07-database-design.md`.
 - **"Şu an":** domain fonksiyonları "şu an"ı parametre olarak alır; testler sabit bir zaman verir.
 
 ## API

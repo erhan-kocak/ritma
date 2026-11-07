@@ -40,6 +40,12 @@ export function toLocalIso(date: string, minutes: number): string {
   return `${date}T${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}:00${TZ_OFFSET}`;
 }
 
+// Bir anı dakika hassasiyetinde İstanbul saatiyle yazar: "2026-10-28T09:00:00+03:00".
+export function toIstanbulIso(instant: Date): string {
+  const minutes = Math.floor(((instant.getTime() + OFFSET_MS) % DAY_MS) / 60_000);
+  return toLocalIso(localDateOf(instant), minutes);
+}
+
 // Verilen günden sonraki ilk Pazartesi–Cuma günü.
 export function nextWorkingDayAfter(date: string): string {
   let next = addDays(date, 1);

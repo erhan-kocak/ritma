@@ -1,7 +1,7 @@
 import { test, type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { createApp } from "../src/app.ts";
-import { createMemoryStore } from "../src/store/memory-store.ts";
+import { createTestStore } from "./db.ts";
 import { startTestServer } from "./helpers.ts";
 import { TEST_NOW, testData } from "./fixtures.ts";
 
@@ -9,7 +9,7 @@ const BASE = "/api/providers/ayse-yilmaz";
 const at = (hm: string, date = "2026-10-28") => `${date}T${hm}:00+03:00`;
 
 async function setup(t: TestContext) {
-  const server = await startTestServer(createApp({ store: createMemoryStore(testData()), now: () => TEST_NOW }));
+  const server = await startTestServer(createApp({ store: await createTestStore(testData()), now: () => TEST_NOW }));
   t.after(() => server.close());
 
   const get = async (path: string) => {
@@ -160,4 +160,11 @@ test("saat dilimi belirtilmemiş start 400 döner, yanlış saate kaydedilmez", 
   const res = await book("2026-10-28T10:00:00");
   assert.equal(res.status, 400);
   assert.deepEqual(res.body, { error: { code: "invalid_request", message: "Lütfen bir saat seçin." } });
+});
+
+test("aynı slota eşzamanlı iki istekten biri 201, diğeri 409 slot_taken", async (t) => {
+  const { book } = await setup(t);
+  const results = await Promise.all([book(at("09:00")), book(at("09:00"))]);
+  assert.deepEqual(results.map((r) => r.status).sort(), [201, 409]);
+  assert.equal(results.find((r) => r.status === 409)!.body.error.code, "slot_taken");
 });

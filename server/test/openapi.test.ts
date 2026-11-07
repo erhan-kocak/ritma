@@ -3,13 +3,13 @@ import assert from "node:assert/strict";
 import { createApp } from "../src/app.ts";
 import { createOpenApiDocument, type OpenApiDocument } from "../src/openapi.ts";
 import { providersRouter } from "../src/routes/providers.ts";
-import { createMemoryStore } from "../src/store/memory-store.ts";
+import { createTestStore } from "./db.ts";
 import { createSeedData } from "../src/store/seed.ts";
 import { startTestServer } from "./helpers.ts";
 import { TEST_NOW, testData } from "./fixtures.ts";
 
 async function setup(t: TestContext) {
-  const server = await startTestServer(createApp({ store: createMemoryStore(testData()), now: () => TEST_NOW }));
+  const server = await startTestServer(createApp({ store: await createTestStore(testData()), now: () => TEST_NOW }));
   t.after(() => server.close());
   return server;
 }
@@ -38,8 +38,8 @@ test("/api yakalayıcısı belgeden sonra da çalışır", async (t) => {
   assert.equal(body.error.code, "not_found");
 });
 
-test("belgedeki yollar router'daki rotalarla birebir aynı", () => {
-  const layers = providersRouter(createMemoryStore(testData()), () => TEST_NOW).stack as unknown as RouteLayer[];
+test("belgedeki yollar router'daki rotalarla birebir aynı", async () => {
+  const layers = providersRouter(await createTestStore(testData()), () => TEST_NOW).stack as unknown as RouteLayer[];
   const fromRouter = layers.flatMap((layer) =>
     Object.keys(layer.route.methods).map(
       (method) => `${method.toUpperCase()} /api/providers${layer.route.path.replace(/:(\w+)/g, "{$1}")}`,
@@ -59,7 +59,7 @@ const EXAMPLE_NOWS = [
 ];
 
 async function startSeeded(t: TestContext, now: Date) {
-  const server = await startTestServer(createApp({ store: createMemoryStore(createSeedData(now)), now: () => now }));
+  const server = await startTestServer(createApp({ store: await createTestStore(createSeedData(now)), now: () => now }));
   t.after(() => server.close());
   const doc: OpenApiDocument = await (await fetch(`${server.baseUrl}/api/openapi.json`)).json();
   return { baseUrl: server.baseUrl, doc };
