@@ -1,7 +1,7 @@
 # Prompt Netleştirme Skill'i (`clarify-prompt`) Tasarımı
 
 Tarih: 7 Kasım 2026
-Durum: Onaylandı
+Durum: Uygulandı (plan: `docs/superpowers/plans/2026-11-07-clarify-prompt.md`)
 Dal: `feat/clarify-prompt`
 
 ## Amaç
@@ -43,7 +43,7 @@ Klasör git'e eklenir; projeye özeldir.
 
 ### Açıklama (frontmatter `description`)
 
-> Use when a request in this repo is not design or new-feature work (debugging, investigation, small code changes, docs) and could reasonably be read in more than one way where guessing wrong would be costly to undo — e.g. "takvim yavaş, bak bir", "testleri düzelt", "API'yi toparla". Skip when the request is already clear, trivially reversible, or answerable from the code. Not for design/feature work — that is brainstorming.
+> Use when a request in this repo is not design or new-feature work (debugging, investigation, small code changes, docs) and could reasonably be read in more than one way where guessing wrong would be costly to undo — e.g. "takvim yavaş, bak bir", "testleri düzelt", "API'yi toparla". Skip when the request is already clear, trivially reversible, or answerable from the code. Not for design/feature work — that is brainstorming. Internal refactors that keep external behavior the same are not design work.
 
 ## Akış
 

@@ -41,6 +41,7 @@ Sayfadaki tüm metinler ve API hata mesajları Türkçe.
 - `server/src/openapi.ts`: `/api/openapi.json`'da sunulan OpenAPI belgesi. Örnek tarih her istekte "bugünden sonraki ilk iş günü" olarak hesaplanır; POST örnekleri beklenen durum ve hata kodunu `x-expected-status` / `x-expected-code` alanlarında taşır.
 - `public/api-docs/index.html`: Swagger UI sayfası.
 - `server/test/`: testler. `fixtures.ts`'teki `testData()` (hizmet `s45`) gerçek örnek veriden (`createSeedData(now)`, hizmet `nutrition-45`) farklı; `openapi.ts` örneklerini denerken `createSeedData` kullan.
+- `.claude/skills/clarify-prompt/`: belirsiz, tasarım dışı istekleri (hata ayıklama, araştırma, küçük değişiklik, doküman) en fazla 3 soruyla net bir prompta çeviren skill. Tasarım: `docs/superpowers/specs/2026-11-07-clarify-prompt-design.md`; testler: `docs/superpowers/skill-tests/2026-11-07-clarify-prompt.md`. Skill değişirse senaryolar alt ajanlarla yeniden çalıştırılır.
 
 Express yalnızca `public/` klasörünü sunar; kök klasördeki dosyalar tarayıcıdan erişilemez.
 
