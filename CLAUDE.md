@@ -75,6 +75,7 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 - Uç nokta eklenince ya da değişince `server/src/openapi.ts` de güncellenir; `server/test/openapi.test.ts` yolların router'la eşleştiğini ve örneklerin belgelenen kodları döndüğünü denetler. Yeni bir router eklenirse o teste de eklenir.
 - Şema değişikliği yeni bir `db/migrations/NNN-<ad>.sql` dosyasıyla yapılır; ardından `npm run db:migrate` çalıştırılır ve `db/schema.sql` commit'lenir (`server/test/migrate.test.ts` güncelliğini denetler). Uygulanmış göç dosyaları değiştirilmez.
 - Tablo adları SQL'e yalnızca `qualify(schema, tablo)` ile yazılır; şema adı yalnızca `ritma` ya da `ritma_test` olabilir.
+- `DATABASE_URL` Neon'un pooled (PgBouncer transaction mode) adresi: oturum düzeyinde ayar/kilit kullanma (`set`, `pg_advisory_lock`); işlem içinde `set local` ve `pg_advisory_xact_lock` kullan.
 - Tasarım ve içerik kararları kullanıcıyla birlikte, tek tek soru sorarak alınır. Kullanıcı onay vermeden uygulamaya geçilmez.
 - Alınan kararlar ve planlar `docs/` altında tutulur (ör. `docs/landing-page-plan.md`, `docs/superpowers/specs/`). Sayfayı değiştirmeden önce ilgili dosyayı oku, değişiklikten sonra güncelle.
 
@@ -95,6 +96,9 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 - `styles.css`'teki `scroll-behavior: smooth` yüzünden `scrollIntoView` sonrası ekran görüntüsü kaydırma bitmeden alınır; `{ behavior: "instant" }` kullan ya da biraz bekle.
 - Swagger'da bir işlemi açtıktan hemen sonra (yaklaşık yarım saniye içinde) gelen "Execute" tıklaması yok sayılır; otomatik testlerde açtıktan sonra kısa bir süre bekle.
 - Bilerek tetiklenen 4xx yanıtları için "Failed to load resource" satırları ve `/favicon.ico` 404'ü beklenen durumlar; JavaScript hatası sayılmaz.
+- Randevu sayfasında seçili gün hafta sonuysa slot çıkmaz; otomatik testte `#days` içinden bir hafta içi gününe tıkla.
+- Neon panelinde tablolar `ritma` şemasında (`public` değil); `timestamptz` UTC gösterilir, `at time zone 'Europe/Istanbul'` ile çevir.
+- Bir test takılırsa `timeout` ile çalıştır ve kilitlere bak (`pg_stat_activity`, `pg_locks`, `pg_blocking_pids`).
 
 ## Yasaklar
 
