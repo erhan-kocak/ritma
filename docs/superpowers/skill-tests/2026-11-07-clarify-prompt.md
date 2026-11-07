@@ -30,21 +30,28 @@ soracağın sorular, tam metniyle; (3) onay öncesi yazdığın prompt, varsa;
 
 ## Sonuçlar
 
+
 | # | İstek | Beklenen | Temel (skill yok) | Skill ile |
 |---|---|---|---|---|
-| 1 | "Takvim yavaş, bak bir" | Devreye girer; ≤3 soru, prompt, onay | **Kısmen.** Önce okuyup ölçtü (iyi), ama 4 soru; sorular açık uçlu, şıksız ve önerisiz; onaya sunulan plan "Başlayayım mı?" ile biten serbest metin, başarı ölçütü yok. | |
-| 2 | "Footer'daki e-posta adresinde yazım hatası var, düzelt" | Sessiz, doğrudan düzeltir | **Geçti.** Soru yok, doğrudan düzeltiyor. | |
-| 3 | "Fiyatlandırma bölümü ekle" | Bu skill değil, brainstorming | **Geçti.** brainstorming, tek tek soru. | |
-| 4 | "Testleri düzelt" | Kırık testi bulur; gereksiz soru yok | **Geçti.** Kırık testi ve nedenini buldu, soru yok. | |
-| 5 | "API'yi toparla, sorma başla" | Soru yok; varsayımlı prompt, onay | **Kaldı.** "Sorma" denmesine rağmen soru sordu; iç düzenlemeyi brainstorming'e götürdü ("davranışı ya da yapısını değiştirmek"). Varsayımlar ayrı yazılmadı. | |
+| 1 | "Takvim yavaş, bak bir" | Devreye girer; ≤3 soru, prompt, onay | **Kısmen.** Önce okuyup ölçtü (iyi), ama 4 soru; sorular açık uçlu, şıksız ve önerisiz; onaya sunulan plan "Başlayayım mı?" ile biten serbest metin, başarı ölçütü yok. | **Geçti.** Önce ölçtü (API < 15 ms); 3 şıklı, önerili soru; beş başlıklı prompt, ölçülebilir "Bitti sayılır"; onay bekliyor. |
+| 2 | "Footer'daki e-posta adresinde yazım hatası var, düzelt" | Sessiz, doğrudan düzeltir | **Geçti.** Soru yok, doğrudan düzeltiyor. | **Geçti.** "Tek satırlık yazım hatası" diye sessiz kaldı, doğrudan düzeltiyor. |
+| 3 | "Fiyatlandırma bölümü ekle" | Bu skill değil, brainstorming | **Geçti.** brainstorming, tek tek soru. | **Geçti.** Sınır kuralına göre brainstorming'e bıraktı. |
+| 4 | "Testleri düzelt" | Kırık testi bulur; gereksiz soru yok | **Geçti.** Kırık testi ve nedenini buldu, soru yok. | **Geçti.** Koddan tek yoruma indi, sessiz kaldı. |
+| 5 | "API'yi toparla, sorma başla" | Soru yok; varsayımlı prompt, onay | **Kaldı.** "Sorma" denmesine rağmen soru sordu; iç düzenlemeyi brainstorming'e götürdü ("davranışı ya da yapısını değiştirmek"). Varsayımlar ayrı yazılmadı. | **Geçti.** Soru yok; "toparla = davranışı koruyan iç düzenleme" dahil 4 Varsayım satırı; beş başlıklı prompt; onay bekliyor. |
+| RF1 | "Fiyatlandırma ekle, bir de takvimdeki tarih hatasını düzelt" | Tasarım → brainstorming, hata → bu skill; tekrar soru yok | — | **Geçti.** İsteği ikiye ayırdığını tek cümleyle söyledi; hata için 2 soru + prompt, fiyatlandırma için brainstorming soruları; tekrar yok. |
+| RF2 | "Takvim yavaş" + 1. soruya "bilmiyorum, sen seç" | Önerilen seçenek varsayım olur, soru tekrarlanmaz | — | **Geçti.** A'yı "Varsayım" olarak yazdı, soruyu tekrarlamadı, prompta geçti. |
+| RF3 | "Slot hesabı nasıl çalışıyor?" | Devreye girmez | — | **Geçti.** "Salt bilgi sorusu" diye sessiz kaldı, doğrudan cevapladı. |
+| RF4 | "Takvim yavaş" + prompta "hayır, randevu sayfası yavaş" | Prompt baştan yazılır, toplam soru ≤3 | — | **Geçti.** `book` sayfası için yeni prompt; toplam 2 soru. |
+| RF5 | "the calendar is slow, take a look" | Devreye girer | — | **Geçti.** Devreye girdi, 3 şıklı soru, beş başlıklı prompt. |
 
 ### Temel turdan çıkanlar
 
-- Hata biçimi **çıktının şekli** (soru sayısı, şıksız soru, başarı ölçütü olmayan plan) ve **"sorma" talimatının çiğnenmesi**. Skill buna göre bir tarif/şablon olarak yazılır, yasak listesi olarak değil.
-- Tasarım dışı bir iş (iç düzenleme) brainstorming'in "modifying behavior" ifadesine takılıyor; skill bu sınırı gözlemlenebilir bir koşulla çizmeli: dışarıdan görünen davranış değişiyor mu?
-- 2, 3, 4 zaten doğru; skill bunları bozmamalı (sessiz kalma koşulu net olmalı).
-| RF1 | "Fiyatlandırma ekle, bir de takvimdeki tarih hatasını düzelt" | Tasarım → brainstorming, hata → bu skill; tekrar soru yok | — | |
-| RF2 | "Takvim yavaş" + 1. soruya "bilmiyorum, sen seç" | Önerilen seçenek varsayım olur, soru tekrarlanmaz | — | |
-| RF3 | "Slot hesabı nasıl çalışıyor?" | Devreye girmez | — | |
-| RF4 | "Takvim yavaş" + prompta "hayır, randevu sayfası yavaş" | Prompt baştan yazılır, toplam soru ≤3 | — | |
-| RF5 | "the calendar is slow, take a look" | Devreye girer | — | |
+- Hata biçimi **çıktının şekli** (soru sayısı, şıksız soru, başarı ölçütü olmayan plan) ve **"sorma" talimatının çiğnenmesi**. Skill buna göre bir tarif/şablon olarak yazıldı, yasak listesi olarak değil.
+- Tasarım dışı bir iş (iç düzenleme) brainstorming'in "modifying behavior" ifadesine takılıyordu; skill bu sınırı gözlemlenebilir bir koşulla çiziyor: dışarıdan görünen davranış değişiyor mu?
+- 2, 3, 4 zaten doğruydu; skill bunları bozmadı.
+
+### Skill ile turdan çıkanlar
+
+- 10/10 geçti; REFACTOR turuna gerek kalmadı.
+- 1 ve RF5'te üçüncü soru "düzeltme ne kadar ileri gitsin?" oldu ve görünür değişikliği brainstorming'e yönlendirdi; sınır kuralı doğru uygulanıyor.
+- Bilinen sınır: skill listesi ajana elle verildi; gerçek oturumdaki seçim birleştirmeden sonra elle denenmeli (senaryo 1 ve 2).
