@@ -92,7 +92,7 @@ Landing `public/index.html` tarayıcıda doğrudan da açılabilir.
 ## Yasaklar
 
 - Frontend'e React, Vue, Tailwind, jQuery gibi framework veya kütüphane eklemeyin; frontend'de build aracı kullanmayın. Tek istisna: `public/api-docs/` içindeki Swagger UI (CDN'den, sabit sürüm `swagger-ui-dist@5.17.14` ve SRI karmasıyla). Sürüm değişirse karmalar da yeniden hesaplanır.
-- Backend'e kullanıcı onayı olmadan yeni `npm` paketi eklemeyin. Mevcut bağımlılıklar: `express`; geliştirme için `typescript`, `@types/express`, `@types/node`.
+- Backend'e kullanıcı onayı olmadan yeni `npm` paketi eklemeyin. Mevcut bağımlılıklar: `express`, `pg` (PostgreSQL sürücüsü); geliştirme için `typescript`, `@types/express`, `@types/node`, `@types/pg`.
 - TypeScript için derleme/bundle adımı eklemeyin; kod Node ile doğrudan çalışmalı.
 - Türkçe dosya veya klasör adı kullanmayın.
 - Sayfa metinlerini İngilizce yazmayın.
