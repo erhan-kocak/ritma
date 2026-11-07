@@ -27,7 +27,7 @@ Prompt zaten açıksa skill soru sormaz, sessiz kalır.
 | Sonuç | Prompt gösterilir; kullanıcı onaylayınca aynı oturumda o promptla işe başlanır | Kullanıcının tercihi (A). |
 | Devreye girme | Kendiliğinden; kullanıcının çağırması gerekmez | Kullanıcının tercihi (B). |
 | Eşik | Orta: istek birden fazla makul şekilde yorumlanabiliyor **ve** yanlış yorumu geri almak zahmetliyse | Gereksiz araya girmeden asıl işe yarayan yerde sorar. |
-| `brainstorming` ile ilişki | Tasarım ya da yeni özellik işinde devreye girmez; yalnızca diğer işlerde (hata ayıklama, araştırma, küçük kod değişikliği, doküman) | Aynı sorular iki kez sorulmaz, görev ayrımı net olur. |
+| `brainstorming` ile ilişki | Tasarım ya da yeni özellik işinde devreye girmez; yalnızca diğer işlerde (hata ayıklama, araştırma, küçük kod değişikliği, doküman) | Aynı sorular iki kez sorulmaz, görev ayrımı net olur. Ölçüt: yeni ya da farklı bir şey isteniyorsa brainstorming; var olanın beklendiği gibi (kod, test ya da `docs/` altında tanımlı olduğu gibi) çalışması isteniyorsa bu skill, düzeltme ekranda görüneni değiştirse de. |
 | Soru biçimi | Her mesajda tek soru, şıklı, önerilen seçenek başta; en fazla 3 soru | Projedeki "tek tek soru" alışkanlığıyla uyumlu. Kalan belirsizlikler varsayım olarak yazılır. |
 | Tetikleme yöntemi | Yalnızca skill dosyası; `CLAUDE.md` kuralı ya da hook yok | Kullanıcının tercihi (yaklaşım 1). Risk: tetikleme tamamen açıklamaya bağlı; testler bunu ölçer. |
 | Dil | Skill içeriği Türkçe; açıklama İngilizce "Use when…" kalıbında, Türkçe örneklerle | İçerik projenin diğer belgeleriyle uyumlu; açıklama hem skill seçimine hem kullanıcının Türkçe isteklerine uyar. |

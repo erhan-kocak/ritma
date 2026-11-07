@@ -17,7 +17,7 @@ Belirsiz bir isteği tahminle yapmak yerine, onu net bir prompta çevirip kullan
 
 Biri yanlışsa sessiz kal ve doğrudan işe başla. Örnekler: tek satırlık yazım hatası, koddan nedeni bulunan kırık test, salt bilgi sorusu ("X nasıl çalışıyor?").
 
-**Sınır:** Dışarıdan görünen davranış değişiyorsa ya da yeni özellik/içerik ekleniyorsa bu `brainstorming` işidir, bu skill'i bırak. Davranışı aynı bırakan iç düzenleme, hata ayıklama, araştırma ve doküman bu skill'in işidir. İstek ikisini birden içeriyorsa tasarım kısmını `brainstorming`'e, kalanını buraya ayır ve bunu kullanıcıya bir cümleyle söyle; aynı soruyu iki kez sorma.
+**Sınır:** Belirleyici soru: kullanıcı **yeni ya da farklı** bir şey mi istiyor (yeni özellik, sayfaya yeni metin ya da bölüm, akışın değişmesi), yoksa var olanın **beklendiği gibi** çalışmasını mı (hata, yavaşlık, kırık test)? Yeni ya da farklıysa `brainstorming` işidir, bu skill'i bırak. "Beklenen" davranış kodda, testlerde ya da `docs/` altında zaten tanımlı olandır; hiçbirinde tanımlı değilse istek yenidir. Var olanı beklendiği gibi çalıştırmak bu skill'in işidir; düzeltme ekranda görüneni değiştirse de öyledir. Davranışı aynı bırakan iç düzenleme, araştırma ve doküman da bu skill'in işidir. İstek ikisini birden içeriyorsa tasarım kısmını `brainstorming`'e, kalanını buraya ayır ve bunu kullanıcıya bir cümleyle söyle; aynı soruyu iki kez sorma.
 
 ## Akış
 

@@ -55,3 +55,16 @@ soracağın sorular, tam metniyle; (3) onay öncesi yazdığın prompt, varsa;
 - 10/10 geçti; REFACTOR turuna gerek kalmadı.
 - 1 ve RF5'te üçüncü soru "düzeltme ne kadar ileri gitsin?" oldu ve görünür değişikliği brainstorming'e yönlendirdi; sınır kuralı doğru uygulanıyor.
 - Bilinen sınır: skill listesi ajana elle verildi; gerçek oturumdaki seçim birleştirmeden sonra elle denenmeli (senaryo 1 ve 2).
+
+## Son inceleme düzeltmesi: sınır kuralı
+
+Son incelemede bulunan önemli sorun: "Dışarıdan görünen davranış değişiyorsa brainstorming" cümlesi harfiyen okununca her hata düzeltmesini brainstorming'e gönderiyordu.
+
+| İstek (kural harfiyen uygulanarak) | Önce | Sonra |
+|---|---|---|
+| "Randevu alma sayfasında boş saatler bir saat kaymış görünüyor, düzelt" | unclear, çelişki var | clarify-prompt, çelişki yok |
+| "Takvim yavaş açılıyor, hızlandır" | unclear, çelişki var | clarify-prompt, çelişki yok |
+| "Formda hatalı e-posta girilince mesaj çıkmıyor, düzelt" | unclear, çelişki var | clarify-prompt; ilk düzeltmede "beklenen neye göre?" belirsizliği kaldı, ikinci düzeltmeden sonra beklenen davranışı `public/script.js` ve `docs/landing-page-plan.md`'de bulup çelişkisiz karar verdi |
+| "Fiyatlandırma bölümü ekle" (gerileme) | — | brainstorming, çelişki yok |
+
+Düzeltme: sınır, "yeni ya da farklı bir şey mi, yoksa var olanın beklendiği gibi çalışması mı?" sorusuna bağlandı; "beklenen" kod, test ya da `docs/` altında tanımlı olan davranıştır.
