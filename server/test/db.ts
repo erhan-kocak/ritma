@@ -3,7 +3,9 @@ import { insertStoreData } from "../src/db/load-data.ts";
 import { createPool } from "../src/db/pool.ts";
 import { migrate } from "../src/db/migrate.ts";
 import { assertSchemaName, qualify } from "../src/db/schema-name.ts";
-import type { StoreData } from "../src/store/store.ts";
+import { createPgStore } from "../src/store/pg-store.ts";
+import type { Store, StoreData } from "../src/store/store.ts";
+import { testData } from "./fixtures.ts";
 
 const TEST_SCHEMA: string = "ritma_test";
 
@@ -27,4 +29,10 @@ export async function resetTestDb(data: StoreData): Promise<void> {
   const tables = ["appointments", "working_ranges", "services", "providers"].map((t) => qualify(TEST_SCHEMA, t));
   await testPool.query(`truncate ${tables.join(", ")} cascade`);
   await insertStoreData(testPool, TEST_SCHEMA, data);
+}
+
+// Test şemasını verilen veriyle (varsayılan testData()) hazırlar ve ona bağlı depoyu döndürür.
+export async function createTestStore(data: StoreData = testData()): Promise<Store> {
+  await resetTestDb(data);
+  return createPgStore({ pool: testPool, schema: "ritma_test" });
 }

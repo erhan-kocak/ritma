@@ -1,7 +1,7 @@
 import { test, type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { createApp } from "../src/app.ts";
-import { createMemoryStore } from "../src/store/memory-store.ts";
+import { createTestStore } from "./db.ts";
 import { startTestServer } from "./helpers.ts";
 import { TEST_NOW, testData } from "./fixtures.ts";
 
@@ -9,7 +9,7 @@ const BASE = "/api/providers/ayse-yilmaz";
 const at = (hm: string, date = "2026-10-28") => `${date}T${hm}:00+03:00`;
 
 async function setup(t: TestContext) {
-  const server = await startTestServer(createApp({ store: createMemoryStore(testData()), now: () => TEST_NOW }));
+  const server = await startTestServer(createApp({ store: await createTestStore(testData()), now: () => TEST_NOW }));
   t.after(() => server.close());
 
   const get = async (path: string) => {
