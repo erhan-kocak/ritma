@@ -106,9 +106,40 @@
   letter-spacing: -.01em;
   margin: 2px 0 0;
 }
-.calendar-nav { display: flex; gap: 8px; }
+.calendar-nav { display: flex; gap: 8px; flex-wrap: wrap; }
 .calendar-arrow { width: 40px; padding: 0; font-size: 1.3rem; }
 .calendar .slot-body strong { font-weight: 600; }
+
+.btn-ghost[aria-pressed="true"] {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.slot-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.badge-today {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.slot-today {
+  border-left: 4px solid var(--primary) !important;
+  background: var(--primary-soft) !important;
+  box-shadow: 0 0 0 1px rgba(91, 75, 219, 0.2), 0 3px 12px rgba(91, 75, 219, 0.1);
+}
 
 @media (max-width: 520px) {
   .app-page { padding-top: 24px; }

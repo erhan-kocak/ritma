@@ -148,6 +148,22 @@ test("takvim o günün randevularını sıralı döner", async (t) => {
   assert.equal(res.body.appointments[1].durationMinutes, 30);
 });
 
+test("tarih belirtilmediğinde tüm randevuları tarih ve saate göre sıralı döner", async (t) => {
+  const { get, book } = await setup(t);
+  await book(at("14:00"), { serviceId: "s30" });
+  await book(at("09:30"));
+  await book(at("10:00", "2026-10-29"));
+
+  const res = await get(`${BASE}/appointments`);
+  assert.equal(res.status, 200);
+  assert.equal(res.body.date, null);
+  assert.deepEqual(
+    res.body.appointments.map((a: { start: string }) => a.start),
+    [at("09:30"), at("14:00"), at("10:00", "2026-10-29")],
+  );
+  assert.equal(res.body.appointments[0].serviceName, "Beslenme danışmanlığı");
+});
+
 test("bilinmeyen /api yolu 404 not_found", async (t) => {
   const { get } = await setup(t);
   const res = await get("/api/yok");

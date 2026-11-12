@@ -89,14 +89,14 @@ export function providersRouter(store: Store, now: () => Date): Router {
 
   router.get("/:slug/appointments", async (req, res) => {
     const provider = await findProvider(req);
-    const date = requireDate(req.query.date);
+    const date = req.query.date !== undefined && req.query.date !== "" ? requireDate(req.query.date) : undefined;
     const services = new Map((await store.listServices(provider.id)).map((s) => [s.id, s]));
     const appointments = (await store.listAppointments(provider.id, date)).map((a) => ({
       ...a,
       serviceName: services.get(a.serviceId)?.name ?? "",
       durationMinutes: services.get(a.serviceId)?.durationMinutes ?? 0,
     }));
-    res.json({ date, appointments });
+    res.json({ date: date ?? null, appointments });
   });
 
   return router;
