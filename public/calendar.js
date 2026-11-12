@@ -21,49 +21,87 @@ function showNotFound() {
   $("calendar").hidden = true;
 }
 
-function appointmentItem(appointment) {
+function appointmentItem(appointment, showDate = false) {
   const item = document.createElement("li");
   item.className = "slot";
+
+  const appointmentDate = appointment.start.slice(0, 10);
+  const isToday = appointmentDate === todayInIstanbul();
 
   const time = document.createElement("span");
   time.className = "time";
   time.textContent = formatTime(appointment.start);
 
   const body = document.createElement("div");
-  body.className = `slot-body ${state.colorByService.get(appointment.serviceId) ?? COLOR_CLASSES[0]}`;
+  const colorClass = state.colorByService.get(appointment.serviceId) ?? COLOR_CLASSES[0];
+  body.className = `slot-body ${colorClass}${isToday ? " slot-today" : ""}`;
+
+  const headerRow = document.createElement("div");
+  headerRow.className = "slot-header-row";
+
   const name = document.createElement("strong");
   name.textContent = appointment.clientName;
-  const detail = document.createElement("span");
-  detail.textContent = `${appointment.serviceName} · ${appointment.durationMinutes} dk`;
-  body.append(name, detail);
+  headerRow.append(name);
 
+  if (isToday) {
+    const todayBadge = document.createElement("span");
+    todayBadge.className = "badge-today";
+    todayBadge.textContent = "Bugün";
+    headerRow.append(todayBadge);
+  }
+
+  const detail = document.createElement("span");
+  const detailText = `${appointment.serviceName} · ${appointment.durationMinutes} dk`;
+  detail.textContent = showDate ? `${detailText} · ${formatDateLong(appointmentDate)}` : detailText;
+
+  body.append(headerRow, detail);
   item.append(time, body);
   return item;
 }
 
 async function showDate(date) {
   state.date = date;
+  const isAll = date === null;
+
   const url = new URL(location.href);
-  url.searchParams.set("date", date);
+  if (isAll) {
+    url.searchParams.delete("date");
+  } else {
+    url.searchParams.set("date", date);
+  }
   history.replaceState(null, "", url);
 
-  $("date-label").textContent = formatDateLong(date);
+  $("date-label").textContent = isAll ? "Tüm Randevular" : formatDateLong(date);
   $("appointments").replaceChildren();
   $("list-status").textContent = "Randevular yükleniyor…";
 
+  $("all-appointments").setAttribute("aria-pressed", isAll ? "true" : "false");
+  $("today").setAttribute("aria-pressed", date === todayInIstanbul() ? "true" : "false");
+  $("prev").hidden = isAll;
+  $("next").hidden = isAll;
+
   try {
-    const { appointments } = await getJson(`${providerPath(state.slug)}/appointments?date=${date}`);
+    const endpoint = isAll
+      ? `${providerPath(state.slug)}/appointments`
+      : `${providerPath(state.slug)}/appointments?date=${date}`;
+    const { appointments } = await getJson(endpoint);
     if (state.date !== date) return;
-    $("list-status").textContent = appointments.length ? "" : "Bu gün için randevu yok.";
-    $("appointments").replaceChildren(...appointments.map(appointmentItem));
+
+    appointments.sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+
+    $("list-status").textContent = appointments.length
+      ? ""
+      : (isAll ? "Henüz randevu bulunmuyor." : "Bu gün için randevu yok.");
+    $("appointments").replaceChildren(...appointments.map((a) => appointmentItem(a, isAll)));
   } catch (error) {
     $("list-status").textContent = error.message;
   }
 }
 
-$("prev").addEventListener("click", () => showDate(addDays(state.date, -1)));
-$("next").addEventListener("click", () => showDate(addDays(state.date, 1)));
+$("all-appointments").addEventListener("click", () => showDate(null));
 $("today").addEventListener("click", () => showDate(todayInIstanbul()));
+$("prev").addEventListener("click", () => showDate(addDays(state.date ?? todayInIstanbul(), -1)));
+$("next").addEventListener("click", () => showDate(addDays(state.date ?? todayInIstanbul(), 1)));
 
 async function init() {
   state.slug = providerSlugFromUrl();
@@ -82,7 +120,13 @@ async function init() {
   }
 
   const requested = new URLSearchParams(location.search).get("date");
-  showDate(isValidDate(requested) ? requested : todayInIstanbul());
+  if (requested === "all") {
+    showDate(null);
+  } else if (isValidDate(requested)) {
+    showDate(requested);
+  } else {
+    showDate(null);
+  }
 }
 
 init();

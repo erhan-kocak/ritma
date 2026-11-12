@@ -211,14 +211,21 @@ export function createOpenApiDocument(now: Date): OpenApiDocument {
         },
         get: {
           tags: [TAG],
-          summary: "O günün randevuları",
-          description: "Başlangıç saatine göre sıralı.",
-          parameters: [slug, date],
+          summary: "Randevuları listeler",
+          description: "Tarih ve başlangıç saatine göre sıralı. Tarih belirtilmezse tüm randevular döner.",
+          parameters: [
+            slug,
+            {
+              ...date,
+              required: false,
+              description: "Gün, YYYY-MM-DD biçiminde (İstanbul saati). Belirtilmezse tüm randevular döner.",
+            },
+          ],
           responses: {
-            "200": ok("Günün randevuları.", {
+            "200": ok("Randevular.", {
               type: "object",
               properties: {
-                date: { type: "string", format: "date" },
+                date: { type: ["string", "null"], format: "date" },
                 appointments: { type: "array", items: ref("CalendarAppointment") },
               },
             }),
